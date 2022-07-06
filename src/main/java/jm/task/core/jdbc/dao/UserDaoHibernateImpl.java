@@ -8,13 +8,14 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
 
-    SessionFactory sessionFactory = Util.getSessionFactory();
-    Transaction transaction;
+     private SessionFactory sessionFactory = Util.getSessionFactory();
+     private Transaction transaction;
 
     public UserDaoHibernateImpl() {
 
@@ -23,8 +24,9 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     public void createUsersTable() {
 
-
         try {
+
+
             Session session = sessionFactory.openSession();// связь с базой данных
             transaction = session.beginTransaction();//Начинает транзакцию базы данных.
             Query query = session.createSQLQuery("CREATE TABLE IF NOT EXISTS users " +//собственный запрос оператора SQL, после запроса возвращается объект Object
@@ -33,8 +35,10 @@ public class UserDaoHibernateImpl implements UserDao {
                     "age TINYINT NOT NULL)");
             query.executeUpdate();
             transaction.commit();
-        } catch (HibernateException e) {
-            e.printStackTrace();
+        } catch (Exception e){
+
+        }finally {
+            sessionFactory.close();
         }
     }
 
@@ -50,6 +54,8 @@ public class UserDaoHibernateImpl implements UserDao {
             transaction.commit();
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            sessionFactory.close();
         }
 
     }
@@ -64,6 +70,8 @@ public class UserDaoHibernateImpl implements UserDao {
             transaction.commit();
         } catch (HibernateException e) {
             transaction.rollback();
+        }finally {
+            sessionFactory.close();
         }
     }
 
@@ -77,6 +85,8 @@ public class UserDaoHibernateImpl implements UserDao {
             transaction.commit();
         } catch (HibernateException e) {
             transaction.rollback();
+        }finally {
+            sessionFactory.close();
         }
     }
 
@@ -92,6 +102,8 @@ public class UserDaoHibernateImpl implements UserDao {
 
         } catch (HibernateException e) {
             transaction.rollback();
+        }finally {
+            sessionFactory.close();
         }
 
         return users;
@@ -107,6 +119,8 @@ public class UserDaoHibernateImpl implements UserDao {
             transaction.commit();
         } catch (HibernateException e) {
             e.printStackTrace();
+        }finally {
+            sessionFactory.close();
         }
     }
 }
